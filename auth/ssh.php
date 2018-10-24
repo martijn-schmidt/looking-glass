@@ -22,14 +22,19 @@
 require_once('Crypt/RSA.php');
 require_once('Net/SSH2.php');
 require_once('authentication.php');
+require_once('includes/utils.php');
 
 final class SSH extends Authentication {
   private $port;
 
-  public function __construct($config) {
-    parent::__construct($config);
+  public function __construct($config, $debug) {
+    parent::__construct($config, $debug);
 
     $this->port = isset($this->config['port']) ? (int) $this->config['port'] : 22;
+
+    if ($this->debug) {
+      define('NET_SSH2_LOGGING', NET_SSH2_LOG_COMPLEX);
+    }
   }
 
   protected function check_config() {
@@ -43,6 +48,10 @@ final class SSH extends Authentication {
       if (!isset($this->config['user']) || !isset($this->config['private_key'])) {
         throw new Exception('Router authentication configuration incomplete.');
       }
+
+      if (isset($this->config['private_key']) && !is_readable($this->config['private_key'])) {
+        throw new Exception('SSH key for authentication is not readable.');
+      }
     }
   }
 
@@ -55,15 +64,19 @@ final class SSH extends Authentication {
       $success = $this->connection->login($this->config['user'], $this->config['pass']);
     } else if ($this->config['auth'] == 'ssh-key') {
       $key = new Crypt_RSA();
-      $key->loadKey(file_get_contents($this->config['private_key']));
 
       if (isset($this->config['pass'])) {
         $key->setPassword($this->config['pass']);
       }
+      $key->loadKey(file_get_contents($this->config['private_key']));
 
       $success = $this->connection->login($this->config['user'], $key);
     } else {
       throw new Exception('Unknown type of connection.');
+    }
+
+    if ($this->debug) {
+      log_to_file($this->connection->getLog());
     }
 
     if (!$success) {
@@ -75,6 +88,9 @@ final class SSH extends Authentication {
     $this->connect();
 
     $data = $this->connection->exec($command);
+    if ($this->debug) {
+      log_to_file($this->connection->getLog());
+    }
 
     $this->disconnect();
 
@@ -84,6 +100,11 @@ final class SSH extends Authentication {
   public function disconnect() {
     if (($this->connection != null) && $this->connection->isConnected()) {
       $this->connection->disconnect();
+
+      if ($this->debug) {
+        log_to_file($this->connection->getLog());
+      }
+
       $this->connection = null;
     }
   }

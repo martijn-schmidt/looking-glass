@@ -128,6 +128,7 @@ Possible values are:
   * juniper **or** junos
   * cisco **or** ios
   * ios-xr **or** iosxr
+  * mikrotik **or** routeros
   * extreme_netiron
   * bird
   * quagga **or** zebra
@@ -235,6 +236,12 @@ $config['logs']['format'] = '[%D] [client: %R] %H > %C';
 Defines the format for each log (%D is for the time, %R is for the requester
 IP address, %H is for the host and %C is for the command).
 
+```php
+$config['logs']['auth_debug'] = false;
+```
+Enable or disable authentication debug details. The details are written in the
+logs file.
+
 ### Filters
 
 ```php
@@ -243,6 +250,21 @@ $config['filters'][] = '/^NotToShow/';
 ```
 Defines filters to eliminate some lines from the output. Do not define any
 filters if there is no nothing to filter.
+
+### Google reCAPTCHA
+
+```php
+$config['recaptcha']['enabled'] = true;
+```
+If set to true, allows the use of Google reCAPTCHA. Sitekey and secret must be
+configured to use reCAPTCHA.
+
+```php
+$config['recaptcha']['apikey'] = "foobar";
+$config['recaptcha']['secret'] = "foobar";
+```
+Defines Google reCAPTCHA sitekey and secret.
+
 
 ### Misc.
 

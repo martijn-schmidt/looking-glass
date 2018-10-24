@@ -19,8 +19,16 @@ execute some commands on routers. The output is sent back to the user.
 For now this looking glass is quite simple. Here you have some features:
 
   * Interface using Javascript and AJAX calls (needs a decent browser)
-  * Support of BIRD, Cisco (IOS and IOS-XR), Juniper, Extreme/Brocade NetIron,
-    OpenBGPd, Quagga, Vyatta/VyOS/EdgeOS and FRRouting routers
+  * Support the following router types:
+    * Juniper
+    * BIRD
+    * Cisco (IOS and IOS-XR)
+    * Extreme/Brocade NetIron
+    * Mikrotik/RouterOS
+    * OpenBGPd
+    * Quagga
+    * Vyatta/VyOS/EdgeOS
+    * FRRouting
   * Support of Telnet and SSH connection to routers using password
     authentication and SSH keys
   * Configurable list of routers
@@ -34,6 +42,9 @@ future:
 
   * Support more routers
   * Support of other types of authentication
+
+Questions? Comments? Join us in the #looking-glass Slack channel on
+[NetworkToCode](https://networktocode.slack.com/).
 
 ## Configuration
 
@@ -71,6 +82,18 @@ If you use this looking glass in your company, please drop me a mail. I would
 be glad to know that this project was helpful for you, and I will update our
 [documentation](docs/our_users.md) to include your company inside the list of
 users if you want me to.
+
+## Helping
+
+You can help this project in many ways. Of course you can ask for features,
+give some ideas for future development, open issues if you found any and
+contribute to the code with pull requests and patches.
+
+You can also support the development of this project by
+[donating some money](https://paypal.me/GuillaumeMazoyer). Developing such
+project can be time consuming and it is done on personal time. Giving few
+dollars/euros/pounds/etc... can be a way to say thanks and help to free some
+time to develop this project.
 
 ## Thanks
 

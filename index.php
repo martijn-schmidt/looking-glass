@@ -38,6 +38,7 @@ final class LookingGlass {
     $this->misc = $config['misc'];
     $this->routers = $config['routers'];
     $this->doc = $config['doc'];
+    $this->recaptcha = $config['recaptcha'];
   }
 
   private function router_count() {
@@ -63,7 +64,7 @@ final class LookingGlass {
   private function render_routers() {
     print('<div class="form-group">');
     print('<label for="routers">Router to use</label>');
-    print('<select size="'.$this->router_count().'" class="form-control" name="routers" id="routers">');
+    print('<select size="'.$this->router_count().'" class="form-control custom-select" name="routers" id="routers">');
 
     $first = true;
     foreach (array_keys($this->routers) as $router) {
@@ -89,7 +90,7 @@ final class LookingGlass {
   private function render_commands() {
     print('<div class="form-group">');
     print('<label for="query">Command to issue</label>');
-    print('<select size="'.$this->command_count().'" class="form-control" name="query" id="query">');
+    print('<select size="'.$this->command_count().'" class="form-control custom-select" name="query" id="query">');
     $selected = ' selected="selected"';
     foreach (array_keys($this->doc) as $cmd) {
       if (isset($this->doc[$cmd]['command'])) {
@@ -121,6 +122,9 @@ final class LookingGlass {
     print('<button class="col-md-6 btn btn-primary" id="send" type="submit">Enter</button>');
     print('<button class="col-md-6 btn btn-danger" id="clear" type="reset">Reset</button>');
     print('</div>');
+    if ($this->recaptcha['enabled'] && isset($this->recaptcha['apikey']) && isset($this->recaptcha['secret'])) {
+      print('<div class="g-recaptcha" data-sitekey="'.$this->recaptcha['apikey'].'"></div>');
+    }
     print('</div>');
   }
 
@@ -225,7 +229,7 @@ final class LookingGlass {
 
   private function render_peering_policy_modal() {
     print('<div id="peering-policy" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">');
-    print('<div class="modal-dialog" role="document">');
+    print('<div class="modal-dialog modal-lg" role="document">');
     print('<div class="modal-content">');
     print('<div class="modal-header">');
     print('<h5 class="modal-title">Peering Policy</h5>');
@@ -282,7 +286,7 @@ final class LookingGlass {
     print('<meta name="keywords" content="Looking Glass, LG, BGP, prefix-list, AS-path, ASN, traceroute, ping, IPv4, IPv6, Cisco, Juniper, Internet" />');
     print('<meta name="description" content="'.$this->frontpage['title'].'" />');
     print('<title>'.htmlentities($this->frontpage['title']).'</title>');
-    print('<link href="libs/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet" />');
+    print('<link href="libs/bootstrap-4.1.3/css/bootstrap.min.css" rel="stylesheet" />');
     print('<link href="'.$this->frontpage['css'].'" rel="stylesheet" />');
     print('</head>');
     print('<body>');
@@ -295,9 +299,12 @@ final class LookingGlass {
     }
     print('</body>');
     print('<script src="libs/jquery-3.3.1.min.js"></script>');
-    print('<script src="libs/bootstrap-4.0.0/js/bootstrap.min.js"></script>');
-    print('<script src="libs/fontawesome-5.0.6/js/fontawesome-all.min.js"></script>');
+    print('<script src="libs/bootstrap-4.1.3/js/bootstrap.min.js"></script>');
+    print('<script src="libs/fontawesome-5.3.1/js/all.min.js"></script>');
     print('<script src="js/looking-glass.js"></script>');
+    if ($this->recaptcha['enabled'] && isset($this->recaptcha['apikey']) && isset($this->recaptcha['secret'])) {
+      print('<script src="https://www.google.com/recaptcha/api.js" async defer></script>');
+    }
     print('</html>');
   }
 }

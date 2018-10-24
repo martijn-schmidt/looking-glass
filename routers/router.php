@@ -26,6 +26,7 @@ require_once('cisco.php');
 require_once('cisco_iosxr.php');
 require_once('extreme_netiron.php');
 require_once('juniper.php');
+require_once('mikrotik.php');
 require_once('openbgpd.php');
 require_once('quagga.php');
 require_once('frr.php');
@@ -142,12 +143,18 @@ abstract class Router {
       throw $e;
     }
 
-    $auth = Authentication::instance($this->config);
+    $auth = Authentication::instance($this->config,
+      $this->global_config['logs']['auth_debug']);
 
     try {
       $data = '';
 
       foreach ($commands as $selected) {
+        $log = str_replace(array('%D', '%R', '%H', '%C'),
+          array(date('Y-m-d H:i:s'), $this->requester, $this->config['host'],
+          '[BEGIN] '.$selected), $this->global_config['logs']['format']);
+        log_to_file($log);
+
         $output = $auth->send_command($selected);
         $output = $this->sanitize_output($output);
 
@@ -155,7 +162,7 @@ abstract class Router {
 
         $log = str_replace(array('%D', '%R', '%H', '%C'),
           array(date('Y-m-d H:i:s'), $this->requester, $this->config['host'],
-          $selected), $this->global_config['logs']['format']);
+          '[END] '.$selected), $this->global_config['logs']['format']);
         log_to_file($log);
       }
     } catch (Exception $e) {
@@ -188,6 +195,10 @@ abstract class Router {
       case 'juniper':
       case 'junos':
         return new Juniper($config, $router_config, $id, $requester);
+
+      case 'mikrotik':
+      case 'routeros':
+        return new Mikrotik($config, $router_config, $id, $requester);
 
       case 'openbgpd':
         return new OpenBGPd($config, $router_config, $id, $requester);

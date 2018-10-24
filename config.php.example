@@ -27,6 +27,11 @@ $config['filters'][] = '/^NotToShow/';
 // If telnet is used in combination with extreme_netiron, uncomment the following filter
 //$config['filters'][] = '/([^\x20-\x7E]|User|Please|Disable|telnet|^\s*$)/';
 
+// Google reCaptcha integration
+$config['recaptcha']['enabled'] = false;
+$config['recaptcha']['apikey'] = 'foobar';
+$config['recaptcha']['secret'] = 'foobar';
+
 // Routers definitions
 
 // Authentication based on SSH or Telnet with password
@@ -91,7 +96,8 @@ $config['routers']['router4']['auth'] = 'ssh-password';
 // The router type (can only be openbgpd)
 $config['routers']['router4']['type'] = 'openbgpd';
 // The router source address to be used
-$config['routers']['router4']['source-interface-id'] = '192.168.1.1';
+$config['routers']['router4']['source-interface-id']['ipv4'] = '192.168.1.1';
+$config['routers']['router4']['source-interface-id']['ipv6'] = '2001:db8::1';
 // The router description to be displayed in the router list
 $config['routers']['router4']['desc'] = 'OpenBGPd Router';
 
